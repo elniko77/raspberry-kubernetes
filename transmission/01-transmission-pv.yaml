@@ -1,0 +1,38 @@
+# Crea un volumen para almacenar los datos de tranmission
+apiVersion: v1
+kind: PersistentVolume
+
+metadata:
+ name: nfsdata-transmission
+ 
+spec:
+ capacity:
+   storage: 100Gi
+ volumeMode: Filesystem
+ accessModes:
+   - ReadWriteOnce
+ persistentVolumeReclaimPolicy: Retain
+ storageClassName: ssd
+ mountOptions:
+   - hard
+   - nfsvers=4.1
+ nfs:
+   path:  /nfsdata/transmission
+   server: rpilab.homelab.test
+
+---
+
+# Esto es exclusivamente para transmission
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: transmission-claim
+ namespace: transmission
+spec:
+ accessModes:
+   - ReadWriteOnce
+ volumeMode: Filesystem
+ resources:
+   requests:
+     storage: 60Gi
+ storageClassName: ssd
